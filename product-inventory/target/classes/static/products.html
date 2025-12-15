@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Product Inventory Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --baby-blue: #b3e5fc;
+            --baby-blue-dark: #81d4fa;
+            --baby-yellow: #fff9c4;
+            --baby-yellow-dark: #fff59d;
+            --bg: #f4f6fb;
+            --text-main: #264653;
+            --danger: #ff6b6b;
+            --success: #2e7d32;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
+            "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--baby-blue), var(--baby-yellow));
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .app-container {
+            margin: 32px 0;
+            width: 95%;
+            max-width: 1100px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .app-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, var(--baby-blue-dark), var(--baby-yellow-dark));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: var(--text-main);
+        }
+
+        .app-header span {
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .app-body {
+            padding: 20px 24px 28px;
+            background: var(--bg);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1.2fr;
+            gap: 18px;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 16px 18px 18px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 8px;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: var(--text-main);
+        }
+
+        .card-header small {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            margin-top: 8px;
+            margin-bottom: 2px;
+            color: #607d8b;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 10px;
+            border: 1px solid #cfd8dc;
+            font-size: 13px;
+            outline: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--baby-blue-dark);
+            box-shadow: 0 0 0 2px rgba(129, 212, 250, 0.35);
+            background: #ffffff;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .btn-row {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 7px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.12s, box-shadow 0.12s, background 0.12s;
+            white-space: nowrap;
+        }
+
+        button.main {
+            background: var(--baby-blue-dark);
+            color: var(--text-main);
+            box-shadow: 0 6px 12px rgba(129, 212, 250, 0.4);
+        }
+
+        button.main:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(129, 212, 250, 0.55);
+        }
+
+        button.secondary {
+            background: #eceff1;
+            color: var(--text-main);
+        }
+
+        button.secondary:hover {
+            background: #e0e0e0;
+        }
+
+        button.danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        button.danger:hover {
+            background: #ff5252;
+        }
+
+        button.small {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .status-bar {
+            margin-top: 10px;
+            font-size: 12px;
+            min-height: 18px;
+        }
+
+        .status-ok {
+            color: var(--success);
+        }
+
+        .status-error {
+            color: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border-bottom: 1px solid #eceff1;
+            padding: 6px 5px;
+            text-align: left;
+        }
+
+        th {
+            background: #e1f5fe;
+            color: #01579b;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        .badge {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+        }
+
+        .badge-active {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .badge-inactive {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .table-wrapper {
+            max-height: 280px;
+            overflow-y: auto;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="app-header">
+        <div>
+            <h1>Product Inventory</h1>
+            <span>Spring Boot + JPA + MySQL</span>
+        </div>
+        <button class="secondary small" onclick="loadAllProducts()">⟳ Refresh products</button>
+    </div>
+
+    <div class="app-body">
+        <div class="grid">
+            <!-- LEFT: Forms -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Product Form</h2>
+                    <small>Create or Update a product</small>
+                </div>
+
+                <!-- Create / Update form -->
+                <label for="productId">Product ID (for update only)</label>
+                <input type="number" id="productId" placeholder="Leave empty when creating a new product">
+
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="e.g. Wireless Mouse">
+
+                <label for="category">Category</label>
+                <input type="text" id="category" placeholder="e.g. Electronics">
+
+                <div class="row">
+                    <div>
+                        <label for="price">Price</label>
+                        <input type="number" id="price" step="0.01" min="0" placeholder="e.g. 19.99">
+                    </div>
+                    <div>
+                        <label for="quantity">Quantity</label>
+                        <input type="number" id="quantity" min="0" placeholder="e.g. 10">
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button class="main" onclick="createProduct()">➕ Create</button>
+                    <button class="secondary" onclick="updateProduct()">✏️ Update</button>
+                    <button class="danger" onclick="deleteProduct()">🗑 Soft Delete</button>
+                    <button class="secondary small" onclick="clearForm()">Clear Form</button>
+                </div>
+
+                <hr style="margin: 14px 0 8px; border: none; border-top: 1px dashed #cfd8dc;">
+
+                <!-- Get by ID -->
+                <label for="searchId">Find Product by ID</label>
+                <div class="row">
+                    <div>
+                        <input type="number" id="searchId" placeholder="Enter product ID">
+                    </div>
+                    <div>
+                        <button class="secondary" onclick="getProductById()">🔍 Get by ID</button>
+                    </div>
+                </div>
+
+                <div id="status" class="status-bar"></div>
+            </div>
+
+            <!-- RIGHT: Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Active Products</h2>
+                    <small>Only products where <b>active = true</b></small>
+                </div>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Created</th>
+                            <th>Updated</th>
+                        </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                        <!-- rows added by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE_URL = "http://localhost:8080/products";
+
+    function setStatus(message, isError = false) {
+        const status = document.getElementById("status");
+        status.textContent = message || "";
+        status.className = "status-bar " + (isError ? "status-error" : "status-ok");
+    }
+
+    function getFormData() {
+        return {
+            name: document.getElementById("name").value.trim(),
+            category: document.getElementById("category").value.trim(),
+            price: Number(document.getElementById("price").value),
+            quantity: Number(document.getElementById("quantity").value)
+        };
+    }
+
+    function clearForm() {
+        document.getElementById("productId").value = "";
+        document.getElementById("name").value = "";
+        document.getElementById("category").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("quantity").value = "";
+        document.getElementById("searchId").value = "";
+        setStatus("");
+    }
+
+    async function loadAllProducts() {
+        try {
+            const response = await fetch(`${BASE_URL}/getAll`);
+            if (!response.ok) {
+                throw new Error("Failed to load products");
+            }
+            const products = await response.json();
+            renderTable(products);
+            setStatus(`Loaded ${products.length} active product(s).`, false);
+        } catch (err) {
+            console.error(err);
+            setStatus("Error loading products", true);
+        }
+    }
+
+    function renderTable(products) {
+        const tbody = document.getElementById("productsTableBody");
+        tbody.innerHTML = "";
+
+        if (!products || products.length === 0) {
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+            cell.colSpan = 8;
+            cell.textContent = "No active products found.";
+            cell.style.textAlign = "center";
+            row.appendChild(cell);
+            tbody.appendChild(row);
+            return;
+        }
+
+        products.forEach(p => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${p.id}</td>
+                <td>${p.name}</td>
+                <td>${p.category}</td>
+                <td>${p.price}</td>
+                <td>${p.quantity}</td>
+                <td>
+                    <span class="badge ${p.active ? "badge-active" : "badge-inactive"}">
+                        ${p.active ? "Active" : "Inactive"}
+                    </span>
+                </td>
+                <td>${p.createdAt || ""}</td>
+                <td>${p.updatedAt || ""}</td>
+            `;
+
+            row.onclick = () => {
+                document.getElementById("productId").value = p.id;
+                document.getElementById("name").value = p.name;
+                document.getElementById("category").value = p.category;
+                document.getElementById("price").value = p.price;
+                document.getElementById("quantity").value = p.quantity;
+            };
+
+            tbody.appendChild(row);
+        });
+    }
+
+    async function createProduct() {
+        const data = getFormData();
+
+        if (!data.name || !data.category || data.price <= 0 || data.quantity < 0) {
+            setStatus("Please fill all fields correctly before creating.", true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/create`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(errText || "Failed to create product");
+            }
+
+            const product = await response.json();
+            setStatus(`Product created with ID ${product.id}`, false);
+            clearForm();
+            await loadAllProducts();
+        } catch (err) {
+            console.error(err);
+            setStatus("Error creating product", true);
+        }
+    }
+
+    async function updateProduct() {
+        const id = document.getElementById("productId").value;
+        if (!id) {
+            setStatus("Please put the Product ID to update.", true);
+            return;
+        }
+
+        const data = getFormData();
+        if (!data.name || !data.category || data.price <= 0 || data.quantity < 0) {
+            setStatus("Please fill all fields correctly before updating.", true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/update/${id}`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(errText || "Failed to update product");
+            }
+
+            const product = await response.json();
+            setStatus(`Product ${product.id} updated successfully.`, false);
+            await loadAllProducts();
+        } catch (err) {
+            console.error(err);
+            setStatus("Error updating product", true);
+        }
+    }
+
+    async function deleteProduct() {
+        const id = document.getElementById("productId").value;
+        if (!id) {
+            setStatus("Please put the Product ID to delete.", true);
+            return;
+        }
+
+        if (!confirm(`Soft delete product with ID ${id}?`)) return;
+
+        try {
+            const response = await fetch(`${BASE_URL}/delete/${id}`, {
+                method: "DELETE"
+            });
+
+            if (!response.ok) {
+                const errText = await response.text();
+                throw new Error(errText || "Failed to delete product");
+            }
+
+            setStatus(`Product ${id} soft deleted (is_active = false).`, false);
+            clearForm();
+            await loadAllProducts();
+        } catch (err) {
+            console.error(err);
+            setStatus("Error deleting product", true);
+        }
+    }
+
+    async function getProductById() {
+        const id = document.getElementById("searchId").value;
+        if (!id) {
+            setStatus("Please enter ID to search.", true);
+            return;
+        }
+
+        try {
+            const response = await fetch(`${BASE_URL}/getById/${id}`);
+            if (!response.ok) {
+                throw new Error("Product not found");
+            }
+            const product = await response.json();
+            renderTable([product]);
+            setStatus(`Showing product with ID ${product.id}`, false);
+        } catch (err) {
+            console.error(err);
+            setStatus("Product not found or inactive", true);
+        }
+    }
+
+    // Load products when page is opened
+    window.addEventListener("load", loadAllProducts);
+</script>
+</body>
+</html>
